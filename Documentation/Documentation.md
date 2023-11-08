@@ -18,14 +18,8 @@ Describe how users can configure the project and list configuration options.
 ## Code Structure
 Explain the project's directory structure and the purpose of key files or modules.
 
-## API Reference (if applicable)
-Document API endpoints, request/response formats, and authentication methods.
-
-## Contributing
+## How to Contribute
 Provide guidelines for contributing to the project, including how to submit bug reports, feature requests, and pull requests.
-
-## Testing
-Explain how to run tests and write new tests, if applicable.
 
 ## Deployment
 Describe deployment procedures, scripts, and best practices, if applicable.
