@@ -1,4 +1,4 @@
-# Project Name
+# Rock Pong
 
 ## Overview
 Briefly describe the purpose and goals of the project.
