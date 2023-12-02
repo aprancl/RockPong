@@ -2,7 +2,8 @@ import tkinter as tk
 import math
 
 
-def move_ball():
+def move_ball() -> None:
+    """Moves the ball across the canvas"""
     global dx, dy, collision_started
 
     # Get the current coordinates of the ball
@@ -24,15 +25,16 @@ def move_ball():
     root.after(5, move_ball)
 
 
-def check_collision():
-    global angle, numCollisions, speed, dx, dy
+def check_collision() -> None:
+    """Checks if the ball should bounce and changes its direction if it does"""
+    global angle, num_collisions, speed, dx, dy
     
     overlapping_items = canvas.find_overlapping(*canvas.bbox(ball))
     overlapping_items = [item for item in overlapping_items if item != canvas.find_withtag("all")[-1]]
 
     if overlapping_items:
-        numCollisions += 1
-        speed = 1.25 + 0.1 * numCollisions
+        num_collisions += 1
+        speed = 1.25 + 0.1 * num_collisions
 
         dx = speed*math.cos(math.radians(angle))
         dy = speed*math.sin(math.radians(angle))
@@ -60,7 +62,7 @@ line6 = canvas.create_line(375, 450, 700, 450, fill="blue", width=2)
 ball = canvas.create_oval(355, 230, 395, 270, fill="pink")
 
 # Set the initial movement of the ball
-numCollisions = 0
+num_collisions = 0
 angle = 135
 speed = 1.25
 dx = 1.25
