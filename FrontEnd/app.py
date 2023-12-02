@@ -38,7 +38,7 @@ def check_collision():
     root.after(25, check_collision)
 
 root = tk.Tk()
-root.title("Moving Ball Example")
+root.title("Pong")
 
 canvas = tk.Canvas(root, width=750, height=500)
 canvas.pack()
