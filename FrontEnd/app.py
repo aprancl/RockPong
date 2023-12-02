@@ -1,5 +1,6 @@
 import tkinter as tk
 import math
+from typing import List
 
 
 def move_ball() -> None:
@@ -45,7 +46,7 @@ def check_collision() -> None:
     root.after(25, check_collision)
 
 
-def populate_canvas() -> int:
+def populate_canvas() -> List[int]:
     """Adds objects to the canvas"""
 
     # Red Lines
@@ -58,9 +59,13 @@ def populate_canvas() -> int:
     canvas.create_line(375, 50, 700, 50, fill="blue", width=2)
     canvas.create_line(375, 450, 700, 450, fill="blue", width=2)
 
+    # Player Rectangles
+    player1 = canvas.create_rectangle(50, 200, 65, 300, fill="red")
+    player2 = canvas.create_rectangle(685, 200, 700, 300, fill="blue")
+
     # Create a ball on the canvas
     ball = canvas.create_oval(355, 230, 395, 270, fill="pink")
-    return ball
+    return [player1, player2, ball]
 
 
 root = tk.Tk()
@@ -69,7 +74,9 @@ root.title("Pong")
 canvas = tk.Canvas(root, width=750, height=500)
 canvas.pack()
 
-ball = populate_canvas()
+relevant_objects = populate_canvas()
+
+player1, player2, ball = relevant_objects[0], relevant_objects[1], relevant_objects[2]
 
 # Variables that control movement
 num_collisions = 0
