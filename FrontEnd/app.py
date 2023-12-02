@@ -28,9 +28,10 @@ def move_ball() -> None:
 def check_collision() -> None:
     """Checks if the ball should bounce and changes its direction if it does"""
     global angle, num_collisions, speed, dx, dy
-    
+
     overlapping_items = canvas.find_overlapping(*canvas.bbox(ball))
-    overlapping_items = [item for item in overlapping_items if item != canvas.find_withtag("all")[-1]]
+    overlapping_items = [
+        item for item in overlapping_items if item != canvas.find_withtag("all")[-1]]
 
     if overlapping_items:
         num_collisions += 1
@@ -44,29 +45,38 @@ def check_collision() -> None:
     root.after(25, check_collision)
 
 
+def populate_canvas() -> int:
+    """Adds objects to the canvas"""
+
+    # Red Lines
+    canvas.create_line(50, 50, 50, 450, fill="red", width=2)
+    canvas.create_line(50, 50, 375, 50, fill="red", width=2)
+    canvas.create_line(50, 450, 375, 450, fill="red", width=2)
+
+    # Blue Lines
+    canvas.create_line(700, 50, 700, 450, fill="blue", width=2)
+    canvas.create_line(375, 50, 700, 50, fill="blue", width=2)
+    canvas.create_line(375, 450, 700, 450, fill="blue", width=2)
+
+    # Create a ball on the canvas
+    ball = canvas.create_oval(355, 230, 395, 270, fill="pink")
+    return ball
+
+
 root = tk.Tk()
 root.title("Pong")
 
 canvas = tk.Canvas(root, width=750, height=500)
 canvas.pack()
 
-line1 = canvas.create_line(50, 50, 50, 450, fill="red", width=2)
-line2 = canvas.create_line(50, 50, 375, 50, fill="red", width=2)
-line3 = canvas.create_line(50, 450, 375, 450, fill="red", width=2)
+ball = populate_canvas()
 
-line4 = canvas.create_line(700, 50, 700, 450, fill="blue", width=2)
-line5 = canvas.create_line(375, 50, 700, 50, fill="blue", width=2)
-line6 = canvas.create_line(375, 450, 700, 450, fill="blue", width=2)
-
-# Create a ball on the canvas
-ball = canvas.create_oval(355, 230, 395, 270, fill="pink")
-
-# Set the initial movement of the ball
+# Variables that control movement
 num_collisions = 0
-angle = 135
-speed = 1.25
-dx = 1.25
-dy = 0
+angle = 135     # Angle the ball will move in
+speed = 1.25    # Speed at which the ball will move
+dx = 1.25       # Change in the x-axis
+dy = 0          # Change in the y-axis
 
 # Start the movement of the ball
 collision_started = False
