@@ -68,6 +68,54 @@ def populate_canvas() -> List[int]:
     return [player1, player2, ball]
 
 
+def move_player(key: str, dy: int, player: int) -> None:
+    """
+    Parameters:
+    key: A string representing the key being pressed
+    dy: An int representing the change in y
+    player: An int representing the canvas ID of the player rectangle
+
+    Moves the Player Rectangles
+    """
+
+    if key in active_keys:
+        canvas.move(player, 0, dy)
+        canvas.after(10, move_player, key, dy, player)
+
+
+def on_press(event: tk.Event) -> None:
+    """
+    Parameters:
+    event: A tk.Event that contains the pressed key
+
+    Adds pressed key to the set of active keys
+    """
+
+    key = event.keysym.lower()
+    active_keys.add(key)
+
+    if key == 'w':
+        move_player(key, -5, player1)
+    elif key == 's':
+        move_player(key, 5, player1)
+    elif key == 'up':
+        move_player(key, -5, player2)
+    elif key == 'down':
+        move_player(key, 5, player2)
+
+
+def on_release(event: tk.Event) -> None:
+    """
+    Parameters:
+    event: A tk.Event that contains the released key
+
+    Removes released key from the set of active keys
+    """
+    
+    key = event.keysym.lower()
+    active_keys.discard(key)
+
+
 root = tk.Tk()
 root.title("Pong")
 
@@ -84,6 +132,15 @@ angle = 135     # Angle the ball will move in
 speed = 1.25    # Speed at which the ball will move
 dx = 1.25       # Change in the x-axis
 dy = 0          # Change in the y-axis
+
+# Event handlers
+canvas.bind("<KeyPress>", on_press)
+canvas.bind("<KeyRelease>", on_release)
+
+# Set of keys currently being pressed
+active_keys = set()
+
+canvas.focus_set()
 
 # Start the movement of the ball
 collision_started = False
