@@ -104,11 +104,11 @@ def on_press(event: tk.Event) -> None:
     if key == 'w':
         move_player(key, -5, player1, 0)
     elif key == 's':
-        move_player(key, 5, player1, 0)
+        move_player(key, 5, player1, 1)
     elif key == 'up':
-        move_player(key, -5, player2, 1)
+        move_player(key, -5, player2, 2)
     elif key == 'down':
-        move_player(key, 5, player2, 1)
+        move_player(key, 5, player2, 3)
 
 
 def on_release(event: tk.Event) -> None:
@@ -148,7 +148,7 @@ canvas.bind("<KeyRelease>", on_release)
 active_keys = set()
 
 # List of after IDs to save memory
-# after_IDs = [None,None]
+after_IDs = [None,None,None,None]
 
 canvas.focus_set()
 
