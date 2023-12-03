@@ -68,19 +68,25 @@ def populate_canvas() -> List[int]:
     return [player1, player2, ball]
 
 
-def move_player(key: str, dy: int, player: int) -> None:
+def move_player(key: str, dy: int, player: int, ID: int) -> None:
     """
     Parameters:
     key: A string representing the key being pressed
     dy: An int representing the change in y
     player: An int representing the canvas ID of the player rectangle
+    ID: An int representing the index storing this call's afterID
 
     Moves the Player Rectangles
     """
+    global after_IDs
 
     if key in active_keys:
         canvas.move(player, 0, dy)
-        canvas.after(10, move_player, key, dy, player)
+        after_IDs[ID] = canvas.after(10, move_player, key, dy, player, ID)
+    # else:
+    #     if after_IDs[ID] is not None:
+    #         canvas.after_cancel(after_IDs[ID])
+    #         after_IDs[ID] = None
 
 
 def on_press(event: tk.Event) -> None:
@@ -88,20 +94,21 @@ def on_press(event: tk.Event) -> None:
     Parameters:
     event: A tk.Event that contains the pressed key
 
-    Adds pressed key to the set of active keys
+    Adds pressed key to the set of active keys and begins moving player rectangle
     """
+    global after_IDs
 
     key = event.keysym.lower()
     active_keys.add(key)
 
     if key == 'w':
-        move_player(key, -5, player1)
+        move_player(key, -5, player1, 0)
     elif key == 's':
-        move_player(key, 5, player1)
+        move_player(key, 5, player1, 0)
     elif key == 'up':
-        move_player(key, -5, player2)
+        move_player(key, -5, player2, 1)
     elif key == 'down':
-        move_player(key, 5, player2)
+        move_player(key, 5, player2, 1)
 
 
 def on_release(event: tk.Event) -> None:
@@ -111,7 +118,7 @@ def on_release(event: tk.Event) -> None:
 
     Removes released key from the set of active keys
     """
-    
+
     key = event.keysym.lower()
     active_keys.discard(key)
 
@@ -139,6 +146,9 @@ canvas.bind("<KeyRelease>", on_release)
 
 # Set of keys currently being pressed
 active_keys = set()
+
+# List of after IDs to save memory
+# after_IDs = [None,None]
 
 canvas.focus_set()
 
