@@ -49,16 +49,6 @@ def check_collision() -> None:
 def populate_canvas() -> List[int]:
     """Adds objects to the canvas"""
 
-    # Red Lines
-    canvas.create_line(50, 50, 50, 450, fill="red", width=2)
-    canvas.create_line(50, 50, 375, 50, fill="red", width=2)
-    canvas.create_line(50, 450, 375, 450, fill="red", width=2)
-
-    # Blue Lines
-    canvas.create_line(700, 50, 700, 450, fill="blue", width=2)
-    canvas.create_line(375, 50, 700, 50, fill="blue", width=2)
-    canvas.create_line(375, 450, 700, 450, fill="blue", width=2)
-
     # Player Rectangles
     player1 = canvas.create_rectangle(50, 200, 65, 300, fill="red")
     player2 = canvas.create_rectangle(685, 200, 700, 300, fill="blue")
@@ -135,7 +125,7 @@ player1, player2, ball = relevant_objects[0], relevant_objects[1], relevant_obje
 
 # Variables that control movement
 num_collisions = 0
-angle = 135     # Angle the ball will move in
+angle = 120     # Angle the ball will move in
 speed = 1.25    # Speed at which the ball will move
 dx = 1.25       # Change in the x-axis
 dy = 0          # Change in the y-axis
@@ -148,7 +138,7 @@ canvas.bind("<KeyRelease>", on_release)
 active_keys = set()
 
 # List of after IDs to save memory
-after_IDs = [None,None,None,None]
+after_IDs = [None, None, None, None]
 
 canvas.focus_set()
 
