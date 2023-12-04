@@ -35,12 +35,13 @@ def check_collision() -> None:
         item for item in overlapping_items if item != canvas.find_withtag("all")[-1]]
 
     if overlapping_items:
-        num_collisions += 1
         speed = 1.25 + 0.1 * num_collisions
-
-        dx = speed*math.cos(math.radians(angle))
-        dy = speed*math.sin(math.radians(angle))
-        angle += 90
+        if num_collisions == 0:
+            dx = speed*math.cos(math.radians(angle))
+            dy = speed*math.sin(math.radians(angle))
+        else:
+            dx *= -1.1
+        num_collisions += 1
 
     # Schedule the collision check again after 25 milliseconds
     root.after(25, check_collision)
