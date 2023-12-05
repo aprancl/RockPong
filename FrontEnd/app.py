@@ -31,8 +31,9 @@ def check_collision() -> None:
     global angle, num_collisions, speed, dx, dy
 
     overlapping_items = canvas.find_overlapping(*canvas.bbox(ball))
-    overlapping_items = [
-        item for item in overlapping_items if item != canvas.find_withtag("all")[-1]]
+
+    # If ball is colliding with anything other than the players
+    overlapping_items = [item for item in overlapping_items if item <= 2]
 
     if overlapping_items:
         speed = 1.25 + 0.1 * num_collisions
@@ -56,7 +57,11 @@ def populate_canvas() -> List[int]:
 
     # Create a ball on the canvas
     ball = canvas.create_oval(355, 230, 395, 270, fill="pink")
-    return [player1, player2, ball]
+
+    # Create scoreboard
+    scoreboard = canvas.create_text(375,20,text="0 - 0", font=("Arial", 20), fill="black")
+
+    return [player1, player2, ball, scoreboard]
 
 
 def move_player(key: str, dy: int, player: int, ID: int) -> None:
@@ -122,7 +127,8 @@ canvas.pack()
 
 relevant_objects = populate_canvas()
 
-player1, player2, ball = relevant_objects[0], relevant_objects[1], relevant_objects[2]
+# Canvas item_IDs 
+player1, player2, ball, scoreboard = relevant_objects[0], relevant_objects[1], relevant_objects[2], relevant_objects[3]
 
 # Variables that control movement
 num_collisions = 0
