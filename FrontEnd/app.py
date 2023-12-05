@@ -3,6 +3,27 @@ import math
 from typing import List
 
 
+def restart(player : int) -> None:
+    """
+    Parameters:
+    player: an int representing the index of the player whose score should be incremented
+    
+    Resets the game board
+    """
+    global dx, dy, angle, speed, num_collisions, scores
+
+    # Update variables
+    scores[player]+=1
+    num_collisions = 0
+    angle = 120 if sum(scores)%2==0 else 300
+    speed = 1.25
+    dx = 1.25 if sum(scores)%2==0 else -1.25
+    dy = 0 
+
+    # Update canvas
+    canvas.coords(ball,(355, 230, 395, 270))
+    canvas.itemconfig(scoreboard, text=f"{scores[0]} - {scores[1]}")
+
 def move_ball() -> None:
     """Moves the ball across the canvas"""
     global dx, dy, collision_started
@@ -10,9 +31,13 @@ def move_ball() -> None:
     # Get the current coordinates of the ball
     x1, y1, x2, y2 = canvas.coords(ball)
 
-    # Check if the ball is within the box boundaries
-    if x1 < 0 or x2 > canvas.winfo_width():
-        dx = -dx  # Reverse the horizontal direction
+    # Check if either player has scored
+    if x1 < 50:
+        restart(1)
+    elif x2 > 700:
+        restart(0)
+
+    # Check if ball within canvas
     if y1 < 0 or y2 > canvas.winfo_height():
         dy = -dy  # Reverse the vertical direction
 
@@ -146,6 +171,9 @@ active_keys = set()
 
 # List of after IDs to save memory
 after_IDs = [None, None, None, None]
+
+# Tracks player scores
+scores = [0,0]
 
 canvas.focus_set()
 
