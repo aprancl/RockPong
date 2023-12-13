@@ -103,8 +103,12 @@ def move_player(key: str, dy: int, player: int, ID: int) -> None:
     global after_IDs
 
     if key in active_keys:
-        canvas.move(player, 0, dy)
-        after_IDs[ID] = canvas.after(10, move_player, key, dy, player, ID)
+        coords = canvas.coords(player)
+
+        # If player movement would not cause player to leave canvas
+        if not (coords[1] + dy < 0 or coords[3] + dy > 500):        
+            canvas.move(player, 0, dy)
+            after_IDs[ID] = canvas.after(10, move_player, key, dy, player, ID)
     # else:
     #     if after_IDs[ID] is not None:
     #         canvas.after_cancel(after_IDs[ID])
@@ -121,16 +125,19 @@ def on_press(event: tk.Event) -> None:
     global after_IDs
 
     key = event.keysym.lower()
-    active_keys.add(key)
 
-    if key == 'w':
-        move_player(key, -5, player1, 0)
-    elif key == 's':
-        move_player(key, 5, player1, 1)
-    elif key == 'up':
-        move_player(key, -5, player2, 2)
-    elif key == 'down':
-        move_player(key, 5, player2, 3)
+    # Prevent multiple instances of "move_player" happening for a singular press
+    if key not in active_keys:
+        active_keys.add(key)
+
+        if key == 'w':
+            move_player(key, -5, player1, 0)
+        elif key == 's':
+            move_player(key, 5, player1, 1)
+        elif key == 'up':
+            move_player(key, -5, player2, 2)
+        elif key == 'down':
+            move_player(key, 5, player2, 3)
 
 
 def on_release(event: tk.Event) -> None:
