@@ -3,26 +3,27 @@ import math
 from typing import List
 
 
-def restart(player : int) -> None:
+def restart(player: int) -> None:
     """
     Parameters:
     player: an int representing the index of the player whose score should be incremented
-    
+
     Resets the game board
     """
     global dx, dy, angle, speed, num_collisions, scores
 
     # Update variables
-    scores[player]+=1
+    scores[player] += 1
     num_collisions = 0
-    angle = 120 if sum(scores)%2==0 else 300
+    angle = 120 if sum(scores) % 2 == 0 else 300
     speed = 1.25
-    dx = 1.25 if sum(scores)%2==0 else -1.25
-    dy = 0 
+    dx = 1.25 if sum(scores) % 2 == 0 else -1.25
+    dy = 0
 
     # Update canvas
-    canvas.coords(ball,(355, 230, 395, 270))
+    canvas.coords(ball, (355, 230, 395, 270))
     canvas.itemconfig(scoreboard, text=f"{scores[0]} - {scores[1]}")
+
 
 def move_ball() -> None:
     """Moves the ball across the canvas"""
@@ -32,13 +33,13 @@ def move_ball() -> None:
     x1, y1, x2, y2 = canvas.coords(ball)
 
     # Check if either player has scored
-    if x1 < 50:
+    if x1 < 0:
         restart(1)
-    elif x2 > 700:
+    elif x2 > 750:
         restart(0)
 
     # Check if ball within canvas
-    if y1 < 0 or y2 > canvas.winfo_height():
+    if y1 < 0 or y2 > 500:
         dy = -dy  # Reverse the vertical direction
 
     canvas.move(ball, dx, dy)  # Move the ball
@@ -84,7 +85,7 @@ def populate_canvas() -> List[int]:
     ball = canvas.create_oval(355, 230, 395, 270, fill="pink")
 
     # Create scoreboard
-    scoreboard = canvas.create_text(375,20,text="0 - 0", font=("Arial", 20), fill="black")
+    scoreboard = canvas.create_text(375, 20, text="0 - 0", font=("Arial", 20), fill="black")
 
     return [player1, player2, ball, scoreboard]
 
@@ -152,7 +153,7 @@ canvas.pack()
 
 relevant_objects = populate_canvas()
 
-# Canvas item_IDs 
+# Canvas item_IDs
 player1, player2, ball, scoreboard = relevant_objects[0], relevant_objects[1], relevant_objects[2], relevant_objects[3]
 
 # Variables that control movement
@@ -173,7 +174,7 @@ active_keys = set()
 after_IDs = [None, None, None, None]
 
 # Tracks player scores
-scores = [0,0]
+scores = [0, 0]
 
 canvas.focus_set()
 
