@@ -55,7 +55,7 @@ def move_ball() -> None:
         collision_started = True
 
     # Call move_ball again after 5 milliseconds
-    root.after(5, move_ball)
+    # root.after(5, move_ball)
 
 
 def check_collision() -> None:
@@ -67,6 +67,7 @@ def check_collision() -> None:
     # If ball is colliding with anything other than the players
     overlapping_items = [item for item in overlapping_items if item <= 2]
 
+    # TODO: Update ball speed after every point, not every collision
     if overlapping_items:
         speed = 1.25 + 0.1 * num_collisions
         if num_collisions == 0:
@@ -215,10 +216,13 @@ def main():
     with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         # While the camera is running
         while cap.isOpened():
-            side = abs( side - 3)
+
+
 
             # Get the current frame 
             ret, frame = cap.read()
+
+
             
             # Set varaibles to hold the inital width and height of the camera frame
             #wid = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
@@ -235,6 +239,16 @@ def main():
             print(halfWid)
             # Get the current coordinates of the ball
             #x1, y1, x2, y2 = canvas.coords(ball)
+
+            # Update the camera to display
+            # x1, y1, x2, y2 = canvas.coords(ball)
+            # side = abs( side - 3)
+
+            mid_ball_x = (canvas.coords(ball)[0] + canvas.coords(ball)[2]) // 2
+            if mid_ball_x > halfWid and side == 1:
+                side = 2
+            elif mid_ball_x <= halfWid and side == 2:
+                side = 1
 
             # Check which side of the frame to analyze
             if(side == 1): # For left side
