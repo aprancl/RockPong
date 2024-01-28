@@ -285,21 +285,30 @@ def main():
                 #print(mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].y, wid, hei))
 
                 # Convert elbow corrdinates to string
-                left_elbow_coordinates = str(mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].x,landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].y, wid, hei))
-                right_elbow_coordinates = str(mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].y, wid, hei))
-                left_wrist_coordinates = str(mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].x,landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].y, wid, hei))
-                right_wrist_coordinates = str(mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].y, wid, hei))
+                left_elbow_coordinates = mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].x,landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].y, wid, hei)
+                right_elbow_coordinates = mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].y, wid, hei)
+                left_wrist_coordinates = mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].x,landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].y, wid, hei)
+                right_wrist_coordinates = mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].y, wid, hei)
                 # canvas.move(ball, )
                 # TODO update where the pong paddles are based on the coordinates defined right here
+                thing = canvas.coords(player1)
+                dx = canvas.coords(player1)[0] - right_wrist_coordinates[0]
+                dy = canvas.coords(player1)[1] - right_wrist_coordinates[1]
+                
+                canvas.move(player1, dx, dy)
+                pdb.set_trace()
 
+
+                
+                
                 
                 
                 # Display the found elbow coordinates for left and right
 
-                cv2.putText(image, left_wrist_coordinates, (15,12), 
+                cv2.putText(image, str(left_wrist_coordinates), (15,12), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1, cv2.LINE_AA)
 
-                cv2.putText(image, right_wrist_coordinates, (15,30), 
+                cv2.putText(image, str(right_wrist_coordinates), (15,30), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1, cv2.LINE_AA)
                 # TODO Move each player piece based on found coordinates.
                 
