@@ -25,7 +25,7 @@ def restart(player: int) -> None:
     num_collisions = 0
     angle = 120 if sum(scores) % 2 == 0 else 300
     SPEED *= 2
-    dx = 10.25 if sum(scores) % 2 == 0 else -1.25
+    dx = 25.25 if sum(scores) % 2 == 0 else -25.25
     dy = 0
 
     # Update canvas
@@ -193,7 +193,7 @@ player1, player2, ball, scoreboard = relevant_objects[0], relevant_objects[1], r
 num_collisions = 0
 angle = 120     # Angle the ball will move in
 # speed = 1.25    # Speed at which the ball will move
-dx = 10.25       # Change in the x-axis
+dx = 25.25       # Change in the x-axis
 dy = 0          # Change in the y-axis
 
     # Event handlers
@@ -292,11 +292,11 @@ def main():
                 # canvas.move(ball, )
                 # TODO update where the pong paddles are based on the coordinates defined right here
                 thing = canvas.coords(player1)
-                dx = canvas.coords(player1)[0] - right_wrist_coordinates[0]
-                dy = canvas.coords(player1)[1] - right_wrist_coordinates[1]
+                dx = 1# canvas.coords(player1)[0] - right_wrist_coordinates[0]
+                dy = 1 #canvas.coords(player1)[1] - right_wrist_coordinates[1]
+
                 
                 canvas.move(player1, dx, dy)
-                pdb.set_trace()
 
 
                 
