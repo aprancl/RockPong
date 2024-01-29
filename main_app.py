@@ -1,3 +1,4 @@
+# hello test123
 #Imports
 import cv2
 import mediapipe as mp
@@ -8,7 +9,8 @@ import math
 from typing import List
 import pdb
 
-SPEED = 500.0
+
+SPEED = 11.25
 
 def restart(player: int) -> None:
     """
@@ -24,8 +26,7 @@ def restart(player: int) -> None:
     scores[player] += 1
     num_collisions = 0
     angle = 120 if sum(scores) % 2 == 0 else 300
-    SPEED *= 2
-    dx = 25.25 if sum(scores) % 2 == 0 else -25.25
+    dx = SPEED if sum(scores) % 2 == 0 else -SPEED
     dy = 0
 
     # Update canvas
@@ -89,7 +90,7 @@ def check_collision() -> None:
     #     num_collisions += 1
 
     # Schedule the collision check again after 25 milliseconds
-    root.after(25, check_collision)
+    root.after(5, check_collision)
 
 
 def populate_canvas() -> List[int]:
@@ -193,7 +194,7 @@ player1, player2, ball, scoreboard = relevant_objects[0], relevant_objects[1], r
 num_collisions = 0
 angle = 120     # Angle the ball will move in
 # speed = 1.25    # Speed at which the ball will move
-dx = 25.25       # Change in the x-axis
+dx =SPEED      # Change in the x-axis
 dy = 0          # Change in the y-axis
 
     # Event handlers
@@ -324,7 +325,7 @@ def main():
                                     )               
             
             # Display pose detections to screen
-            cv2.imshow('Mediapipe Feed', image)
+            # cv2.imshow('Mediapipe Feed', image)
 
             #!!!!TO ADD!!!!
             #This function while loop shoud also be the loop running the window for the game and pong ball functionalities
