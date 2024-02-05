@@ -1,4 +1,3 @@
-# hello test123
 #Imports
 import cv2
 import mediapipe as mp
@@ -9,8 +8,7 @@ import math
 from typing import List
 import pdb
 
-
-SPEED = 11.25
+SPEED = 500.0
 
 def restart(player: int) -> None:
     """
@@ -26,7 +24,8 @@ def restart(player: int) -> None:
     scores[player] += 1
     num_collisions = 0
     angle = 120 if sum(scores) % 2 == 0 else 300
-    dx = SPEED if sum(scores) % 2 == 0 else -SPEED
+    SPEED *= 2
+    dx = 25.25 if sum(scores) % 2 == 0 else -25.25
     dy = 0
 
     # Update canvas
@@ -90,7 +89,7 @@ def check_collision() -> None:
     #     num_collisions += 1
 
     # Schedule the collision check again after 25 milliseconds
-    root.after(5, check_collision)
+    root.after(25, check_collision)
 
 
 def populate_canvas() -> List[int]:
@@ -194,7 +193,7 @@ player1, player2, ball, scoreboard = relevant_objects[0], relevant_objects[1], r
 num_collisions = 0
 angle = 120     # Angle the ball will move in
 # speed = 1.25    # Speed at which the ball will move
-dx =SPEED      # Change in the x-axis
+dx = 25.25       # Change in the x-axis
 dy = 0          # Change in the y-axis
 
     # Event handlers
@@ -292,12 +291,13 @@ def main():
                 right_wrist_coordinates = mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].y, wid, hei)
                 # canvas.move(ball, )
                 # TODO update where the pong paddles are based on the coordinates defined right here
-                thing = canvas.coords(player1)
-                dx = 1# canvas.coords(player1)[0] - right_wrist_coordinates[0]
-                dy = 1 #canvas.coords(player1)[1] - right_wrist_coordinates[1]
 
-                
-                canvas.move(player1, dx, dy)
+                ply = player1 if side == 1 else player2
+                dx = right_wrist_coordinates[0] - canvas.coords(ply)[0]
+                dy = right_wrist_coordinates[1] - canvas.coords(ply)[1]  
+                if(canvas.coords(ply)[0] < 0):
+                    dx = 50
+                canvas.move(ply, dx, dy)
 
 
                 
@@ -325,7 +325,7 @@ def main():
                                     )               
             
             # Display pose detections to screen
-            # cv2.imshow('Mediapipe Feed', image)
+            cv2.imshow('Mediapipe Feed', image)
 
             #!!!!TO ADD!!!!
             #This function while loop shoud also be the loop running the window for the game and pong ball functionalities
