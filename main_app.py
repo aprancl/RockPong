@@ -8,6 +8,7 @@ import math
 from typing import List
 import pdb
 
+SPEED = 500.0
 
 def restart(player: int) -> None:
     """
@@ -16,14 +17,15 @@ def restart(player: int) -> None:
 
     Resets the game board
     """
-    global dx, dy, angle, speed, num_collisions, scores
+    global dx, dy, angle, SPEED, num_collisions, scores
+
 
     # Update variables
     scores[player] += 1
     num_collisions = 0
     angle = 120 if sum(scores) % 2 == 0 else 300
-    speed = 1.25
-    dx = 1.25 if sum(scores) % 2 == 0 else -1.25
+    SPEED *= 2
+    dx = 25.25 if sum(scores) % 2 == 0 else -25.25
     dy = 0
 
     # Update canvas
@@ -67,15 +69,24 @@ def check_collision() -> None:
     # If ball is colliding with anything other than the players
     overlapping_items = [item for item in overlapping_items if item <= 2]
 
-    # TODO: Update ball speed after every point, not every collision
     if overlapping_items:
-        speed = 1.25 + 0.1 * num_collisions
+        # speed = 1.25 + 0.1 * num_collisions
         if num_collisions == 0:
-            dx = speed*math.cos(math.radians(angle))
-            dy = speed*math.sin(math.radians(angle))
+            dx = math.cos(math.radians(angle))
+            dy = math.sin(math.radians(angle))
         else:
             dx *= -1.1
         num_collisions += 1
+
+
+    # if overlapping_items:
+    #     speed = 1.25 + 0.1 * num_collisions
+    #     if num_collisions == 0:
+    #         dx = speed*math.cos(math.radians(angle))
+    #         dy = speed*math.sin(math.radians(angle))
+    #     else:
+    #         dx *= -1.1
+    #     num_collisions += 1
 
     # Schedule the collision check again after 25 milliseconds
     root.after(25, check_collision)
@@ -181,8 +192,8 @@ player1, player2, ball, scoreboard = relevant_objects[0], relevant_objects[1], r
     # Variables that control movement
 num_collisions = 0
 angle = 120     # Angle the ball will move in
-speed = 1.25    # Speed at which the ball will move
-dx = 1.25       # Change in the x-axis
+# speed = 1.25    # Speed at which the ball will move
+dx = 25.25       # Change in the x-axis
 dy = 0          # Change in the y-axis
 
     # Event handlers
@@ -232,11 +243,8 @@ def main():
             hei = 500
             
 
-            print(wid)
-            print(hei)
             # Width to split the image fram with
             halfWid = wid/2
-            print(halfWid)
             # Get the current coordinates of the ball
             #x1, y1, x2, y2 = canvas.coords(ball)
 
@@ -277,22 +285,36 @@ def main():
                 #print(mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].y, wid, hei))
 
                 # Convert elbow corrdinates to string
-                left_elbow_coordinates = str(mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].x,landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].y, wid, hei))
-                right_elbow_coordinates = str(mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].y, wid, hei))
-                left_wrist_coordinates = str(mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].x,landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].y, wid, hei))
-                right_wrist_coordinates = str(mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].y, wid, hei))
+                left_elbow_coordinates = mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].x,landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].y, wid, hei)
+                right_elbow_coordinates = mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].y, wid, hei)
+                left_wrist_coordinates = mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].x,landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].y, wid, hei)
+                right_wrist_coordinates = mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].y, wid, hei)
+                # canvas.move(ball, )
+                # TODO update where the pong paddles are based on the coordinates defined right here
+
+                ply = player1 if side == 1 else player2
+                dx = right_wrist_coordinates[0] - canvas.coords(ply)[0]
+                dy = right_wrist_coordinates[1] - canvas.coords(ply)[1]  
+                if(canvas.coords(ply)[0] < 0):
+                    dx = 50
+                canvas.move(ply, dx, dy)
+
+
+                
+                
+                
                 
                 # Display the found elbow coordinates for left and right
 
-                cv2.putText(image, left_elbow_coordinates, (15,12), 
+                cv2.putText(image, str(left_wrist_coordinates), (15,12), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1, cv2.LINE_AA)
 
-                cv2.putText(image, right_elbow_coordinates, (15,30), 
+                cv2.putText(image, str(right_wrist_coordinates), (15,30), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1, cv2.LINE_AA)
                 # TODO Move each player piece based on found coordinates.
                 
             except:
-                print("There was an exception during pose detection. Make sure you are in frame.")
+                # print("There was an exception during pose detection. Make sure you are in frame.")
                 pass
 
             # Render detections
