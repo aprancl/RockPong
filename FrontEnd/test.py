@@ -2,28 +2,8 @@ import pygame
 import math
 
 
-def restart(player: int) -> None:
-    """
-    Parameters:
-    player: an int representing the index of the player whose score should be incremented
-
-    Resets the game board
-    """
-    global dx, dy, angle, SPEED, num_collisions, scores, BALL
-
-
-    # Update variables
-    # scores[player] += 1
-    # num_collisions = 0
-    angle = 120 if sum(scores) % 2 == 0 else 300
-    # SPEED *= 2
-    dx = 25.25 if sum(scores) % 2 == 0 else -25.25
-    dy = 0
-
-    # Update canvas
-    canvas.coords(ball, (355, 230, 395, 270))
-    canvas.itemconfig(scoreboard, text=f"{scores[0]} - {scores[1]}")
-
+# Ball dimensions for restart
+BALL = (355, 230, 40, 40)
 
 def main():
 
@@ -34,15 +14,11 @@ def main():
     running = True
     dt = 0  # Stores seconds between frames
 
-    # Important positions
-    PLAYER1 = (50, 200, 15, 100)
-    PLAYER2 = (685, 200, 15, 100)
-    BALL = (355, 230, 40, 40)
-
     # Values that can change [[x, y], [width, height]]
     curr_player1 = [[50, 200], [15, 100]]
     curr_player2 = [[685, 200], [15, 100]]
     curr_ball = [[355, 230], [40, 40]]
+    scores = [0,0]
 
     # Movement Values
     dx = 125
@@ -85,6 +61,22 @@ def main():
 
         if curr_ball[0][1] <=0 or curr_ball[0][1] >= 470:
             dy*=-1
+
+        if curr_ball[0][0] <=0:
+            scores[0]+=1
+            curr_ball[0][0] = BALL[0]
+            curr_ball[0][1] = BALL[1]
+            dx = 125 if sum(scores)%2==0 else -125
+            dy = 0
+            angle = 110 if sum(scores)%2==0 else 290
+
+        elif curr_ball[0][0] >=750:
+            scores[1]+=1
+            curr_ball[0][0] = BALL[0]
+            curr_ball[0][1] = BALL[1]
+            dx = 125 if sum(scores)%2==0 else -125
+            dy = 0
+            angle = 110 if sum(scores)%2==0 else 290
 
         # Handle player movement
         keys = pygame.key.get_pressed()
