@@ -116,8 +116,8 @@ def main():
                 # TODO update where the pong paddles are based on the coordinates defined right here
 
                 cur_player = player1 if side == 1 else player2
-                dx = right_wrist_coordinates[0] 
-                dy = right_wrist_coordinates[1] - cur_player.y
+                curr_player1[0][0] = right_wrist_coordinates[0] 
+                curr_player1[0][1] = right_wrist_coordinates[1] - cur_player.y
                 if(right_wrist_coordinates[0] < 0):
                     dx = 50
 
