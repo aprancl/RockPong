@@ -233,8 +233,6 @@ def main():
             # Get the current frame 
             ret, frame = cap.read()
 
-
-            
             # Set varaibles to hold the inital width and height of the camera frame
             #wid = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
             #hei = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
