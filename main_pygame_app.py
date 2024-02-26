@@ -56,6 +56,7 @@ def main():
             curr_ball[0][0] += dx * dt
             curr_ball[0][1] += dy * dt
 
+            lines = draw_line_dashed(screen, (screen.get_width()/2, 0), (screen.get_width()/2, 500), width=10)
             ball = pygame.draw.ellipse(screen, 'pink', (curr_ball[0][0], curr_ball[0][1], curr_ball[1][0], curr_ball[1][1]))
             player1 = pygame.draw.rect(screen, 'red', (curr_player1[0][0], curr_player1[0][1], curr_player1[1][0], curr_player1[1][1]))
             player2 = pygame.draw.rect(screen, 'blue', (curr_player2[0][0], curr_player2[0][1], curr_player2[1][0], curr_player2[1][1]))
@@ -233,6 +234,38 @@ def main():
 
 
         pygame.quit()
+
+def draw_line_dashed(surface: pygame.Surface, start: tuple[int], end: tuple[int], width: int = 1, dash_length: float = 15.5) -> list[pygame.Rect]: 
+    """Draws a dashed line from start to end with desired width and length
+       Parameters:
+       surface:     The screen where the dashes are to be drawn
+       start:       The start point
+       end:         The end point
+       width:       The desired width of each dash
+       dash_length: The length of each dash
+       
+       Returns:
+       A list of references to pygame.Rect objects"""
+    
+    # Convert tuples to numpy arrays
+    start = np.array(start)
+    end = np.array(end)
+
+    # Calculate the length of the line
+    length = np.linalg.norm(end - start)
+
+    # Determine the number of dashes
+    num_dashes = int(length / dash_length)
+
+    # Calculate the positions of the dashes
+    dash_segments = np.array(
+        [np.linspace(start[i], end[i], num_dashes) for i in range(2)]).transpose()
+
+    # Draw dashed line segments
+    # Each line is drawn from dash_segments[i] to dash_segments[i+1]
+    # Alternates between red and blue
+    return [pygame.draw.line(surface, "Blue" if n % 2 == 0 else "Red", tuple(dash_segments[n]), tuple(dash_segments[n + 1]), width)
+            for n in range(0, num_dashes-1, 3)]
 
 if __name__ == "__main__":
     main()
