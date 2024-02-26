@@ -77,10 +77,10 @@ def main():
             # Get the current coordinates of the ball
             #x1, y1, x2, y2 = canvas.coords(ball)
             mid_ball_x = curr_ball[0][0] #(canvas.coords(ball)[0] + canvas.coords(ball)[2]) // 2
-            if mid_ball_x > halfWid and side == 1:
-                side = 2
-            elif mid_ball_x <= halfWid and side == 2:
+            if mid_ball_x > halfWid and side == 2:
                 side = 1
+            elif mid_ball_x <= halfWid and side == 1:
+                side = 2
 
             # Check which side of the frame to analyze
             if(side == 1): # For left side
@@ -115,13 +115,24 @@ def main():
                 # canvas.move(ball, )
                 # TODO update where the pong paddles are based on the coordinates defined right here
 
-                cur_player = player1 if side == 1 else player2
-                curr_player1[0][0] = right_wrist_coordinates[0] 
-                curr_player1[0][1] = right_wrist_coordinates[1] - cur_player.y
-                if(right_wrist_coordinates[0] < 0):
-                    dx = 50
+                # curr_player1[0][0] = right_wrist_coordinates[0] 
+                # curr_player1[0][1] = right_wrist_coordinates[1] - cur_player.y
 
-                cur_player = pygame.draw.rect(screen, 'blue', (dx, right_wrist_coordinates[1], cur_player[1][0], cur_player[1][1]))
+                # cur_player = player1 if side == 1 else player2
+                if side == 1: # player1
+                    curr_player1[0][0] = right_wrist_coordinates[0] 
+                    curr_player1[0][1] = right_wrist_coordinates[1] #- player1.y
+                else: # player2
+                    curr_player2[0][0] = left_wrist_coordinates[0] 
+                    curr_player2[0][1] = left_wrist_coordinates[1]# - player2.y
+
+                # f side == 1: # player1
+                #     curr_player1[0][0] = right_wrist_coordinates[0] 
+                #     curr_player1[0][1] = right_wrist_coordinates[1] - cur_player.yelse: # player2
+                # if(right_wrist_coordinates[0] < 0):
+                #     dx = 50
+
+                # cur_player = pygame.draw.rect(screen, 'blue', (dx, right_wrist_coordinates[1], cur_player[1][0], cur_player[1][1]))
                 # canvas.move(cur_player, dx, dy)
                 
                 # Display the found elbow coordinates for left and right
