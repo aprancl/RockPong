@@ -56,6 +56,7 @@ def main():
             curr_ball[0][0] += dx * dt
             curr_ball[0][1] += dy * dt
 
+            lines = draw_line_dashed(screen, (screen.get_width()/2, 0), (screen.get_width()/2, 500), width=10)
             ball = pygame.draw.ellipse(screen, 'pink', (curr_ball[0][0], curr_ball[0][1], curr_ball[1][0], curr_ball[1][1]))
             player1 = pygame.draw.rect(screen, 'red', (curr_player1[0][0], curr_player1[0][1], curr_player1[1][0], curr_player1[1][1]))
             player2 = pygame.draw.rect(screen, 'blue', (curr_player2[0][0], curr_player2[0][1], curr_player2[1][0], curr_player2[1][1]))
@@ -77,10 +78,10 @@ def main():
             # Get the current coordinates of the ball
             #x1, y1, x2, y2 = canvas.coords(ball)
             mid_ball_x = curr_ball[0][0] #(canvas.coords(ball)[0] + canvas.coords(ball)[2]) // 2
-            if mid_ball_x > halfWid and side == 1:
-                side = 2
-            elif mid_ball_x <= halfWid and side == 2:
+            if mid_ball_x > halfWid and side == 2:
                 side = 1
+            elif mid_ball_x <= halfWid and side == 1:
+                side = 2
 
             # Check which side of the frame to analyze
             if(side == 1): # For left side
@@ -114,17 +115,25 @@ def main():
                 right_wrist_coordinates = mediapipe_to_pixel_coords(landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].y, wid, hei)
                 # canvas.move(ball, )
                 # TODO update where the pong paddles are based on the coordinates defined right here
+
+                # curr_player1[0][0] = right_wrist_coordinates[0] 
+                # curr_player1[0][1] = right_wrist_coordinates[1] - cur_player.y
+
+                # cur_player = player1 if side == 1 else player2
                 if side == 1: # player1
                     curr_player1[0][0] = right_wrist_coordinates[0] 
-                    curr_player1[0][1] = right_wrist_coordinates[1] - cur_player.y
+                    curr_player1[0][1] = right_wrist_coordinates[1] #- player1.y
                 else: # player2
-                    curr_player2[0][0] = right_wrist_coordinates[0] 
-                    curr_player2[0][1] = right_wrist_coordinates[1] - cur_player.y
-                    
-                if(right_wrist_coordinates[0] < 0):
-                    dx = 50
+                    curr_player2[0][0] = left_wrist_coordinates[0] 
+                    curr_player2[0][1] = left_wrist_coordinates[1]# - player2.y
 
-                cur_player = pygame.draw.rect(screen, 'blue', (dx, right_wrist_coordinates[1], cur_player[1][0], cur_player[1][1]))
+                # f side == 1: # player1
+                #     curr_player1[0][0] = right_wrist_coordinates[0] 
+                #     curr_player1[0][1] = right_wrist_coordinates[1] - cur_player.yelse: # player2
+                # if(right_wrist_coordinates[0] < 0):
+                #     dx = 50
+
+                # cur_player = pygame.draw.rect(screen, 'blue', (dx, right_wrist_coordinates[1], cur_player[1][0], cur_player[1][1]))
                 # canvas.move(cur_player, dx, dy)
                 
                 # Display the found elbow coordinates for left and right
@@ -225,6 +234,38 @@ def main():
 
 
         pygame.quit()
+
+def draw_line_dashed(surface: pygame.Surface, start: tuple[int], end: tuple[int], width: int = 1, dash_length: float = 15.5) -> list[pygame.Rect]: 
+    """Draws a dashed line from start to end with desired width and length
+       Parameters:
+       surface:     The screen where the dashes are to be drawn
+       start:       The start point
+       end:         The end point
+       width:       The desired width of each dash
+       dash_length: The length of each dash
+       
+       Returns:
+       A list of references to pygame.Rect objects"""
+    
+    # Convert tuples to numpy arrays
+    start = np.array(start)
+    end = np.array(end)
+
+    # Calculate the length of the line
+    length = np.linalg.norm(end - start)
+
+    # Determine the number of dashes
+    num_dashes = int(length / dash_length)
+
+    # Calculate the positions of the dashes
+    dash_segments = np.array(
+        [np.linspace(start[i], end[i], num_dashes) for i in range(2)]).transpose()
+
+    # Draw dashed line segments
+    # Each line is drawn from dash_segments[i] to dash_segments[i+1]
+    # Alternates between red and blue
+    return [pygame.draw.line(surface, "Blue" if n % 2 == 0 else "Red", tuple(dash_segments[n]), tuple(dash_segments[n + 1]), width)
+            for n in range(0, num_dashes-1, 3)]
 
 if __name__ == "__main__":
     main()
