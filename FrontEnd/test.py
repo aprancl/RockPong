@@ -15,6 +15,7 @@ def main():
     clock = pygame.time.Clock()  # Used to calculate Delta time
     running = True
     dt = 0  # Stores seconds between frames
+    font = pygame.font.Font(None,70)
 
     # Values that can change [[x, y], [width, height]]
     curr_player1 = [[50, 200], [15, 100]]
@@ -50,6 +51,7 @@ def main():
         ball = pygame.draw.ellipse(screen, 'pink', (curr_ball[0][0], curr_ball[0][1], curr_ball[1][0], curr_ball[1][1]))
         player1 = pygame.draw.rect(screen, 'red', (curr_player1[0][0], curr_player1[0][1], curr_player1[1][0], curr_player1[1][1]))
         player2 = pygame.draw.rect(screen, 'blue', (curr_player2[0][0], curr_player2[0][1], curr_player2[1][0], curr_player2[1][1]))
+        draw_player_scores(screen, scores, font)
 
         # Check collisions
         if player1.colliderect(ball) or player2.colliderect(ball):
@@ -64,7 +66,7 @@ def main():
             dy *= -1
 
         if curr_ball[0][0] <= 0:
-            scores[0] += 1
+            scores[1] += 1
             curr_ball[0][0] = BALL[0]
             curr_ball[0][1] = BALL[1]
             dx = 125 if sum(scores) % 2 == 0 else -125
@@ -73,7 +75,7 @@ def main():
             first_collision = True
 
         elif curr_ball[0][0] >= 750:
-            scores[1] += 1
+            scores[0] += 1
             curr_ball[0][0] = BALL[0]
             curr_ball[0][1] = BALL[1]
             dx = 125 if sum(scores) % 2 == 0 else -125
@@ -149,6 +151,11 @@ def draw_line_dashed(surface: pygame.Surface, start: tuple[int], end: tuple[int]
     return [pygame.draw.line(surface, "Blue" if n % 2 == 0 else "Red", tuple(dash_segments[n]), tuple(dash_segments[n + 1]), width)
             for n in range(0, num_dashes-1, 3)]
 
+def draw_player_scores(surface: pygame.Surface, scores: list[int], font: pygame.font.Font) -> None:
+    red_text = font.render(str(scores[0]), True, 'red')
+    blue_text = font.render(str(scores[1]),True,'blue')
+    surface.blit(red_text, ((surface.get_width()/2)-50,30))
+    surface.blit(blue_text, ((surface.get_width()/2)+27,30))
 
 if __name__ == "__main__":
     main()
