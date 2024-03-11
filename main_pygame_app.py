@@ -82,9 +82,9 @@ def main():
             # Get the current coordinates of the ball
             #x1, y1, x2, y2 = canvas.coords(ball)
             mid_ball_x = curr_ball[0][0] #(canvas.coords(ball)[0] + canvas.coords(ball)[2]) // 2
-            if mid_ball_x > halfWid and side == 2:
+            if mid_ball_x <= halfWid and side == 2:
                 side = 1
-            elif mid_ball_x <= halfWid and side == 1:
+            elif mid_ball_x > halfWid and side == 1:
                 side = 2
 
             # Check which side of the frame to analyze
@@ -130,34 +130,45 @@ def main():
                 # cur_player = player1 if side == 1 else player2
                 if side == 1: # player1
                     # Check if player would out of bounds. If so, place them on edge
-                    if right_wrist_coordinates[0] > halfWid:
-                        right_wrist_coordinates[0] = halfWid -5
-                    
-                    elif right_wrist_coordinates[0] < 0:
-                        right_wrist_coordinates[0] = 1
-
-                    if right_wrist_coordinates[1] > hei:
-                        right_wrist_coordinates[1] = hei
-                    elif right_wrist_coordinates[1] < 0:
-                        right_wrist_coordinates[1] = 1
-
                     curr_player1[0][0] = right_wrist_coordinates[0] 
                     curr_player1[0][1] = right_wrist_coordinates[1] #- player1.y
+                    curr_player1[0][0] /= 2
+
+                    if curr_player1[0][0] > halfWid:
+                        curr_player1[0][0] = halfWid -5
+                    
+                    elif curr_player1[0][0] < 0:
+                        curr_player1[0][0] = 1
+
+                    if curr_player1[0][1] > hei:
+                        curr_player1[0][1] = hei
+                    elif curr_player1[0][1] < 0:
+                        curr_player1[0][1] = 1
+                    
+                    # curr_player1[0][0] = right_wrist_coordinates[0] 
+                    # curr_player1[0][1] = right_wrist_coordinates[1] #- player1.y
+                    # curr_player1[0][0] /= 2
+
                 else: # player2
                     # Check if player would be on the wrong side
-                    if left_wrist_coordinates[0] <= halfWid:
-                        right_wrist_coordinates[0] = halfWid + 5
-                    
-                    elif left_wrist_coordinates[0] > wid:
-                        left_wrist_coordinates[0] = wid 
-
-                    if left_wrist_coordinates[1] > hei:
-                        left_wrist_coordinates[1] = hei
-                    elif left_wrist_coordinates[1] < 0:
-                        left_wrist_coordinates[1] = 1
-
                     curr_player2[0][0] = left_wrist_coordinates[0] 
                     curr_player2[0][1] = left_wrist_coordinates[1]# - player2.y
+                    curr_player2[0][0] = (curr_player2[0][0] / 2) + halfWid
+
+                    if curr_player2[0][0] <= halfWid:
+                        curr_player2[0][0] = halfWid + 5
+                    
+                    elif curr_player2[0][0] > wid:
+                        curr_player2[0][0] = wid 
+
+                    if left_wrist_coordinates[1] > hei:
+                        curr_player2[0][1] = hei
+                    elif curr_player2[0][1] < 0:
+                        curr_player2[0][1] = 1
+
+                    # curr_player2[0][0] = left_wrist_coordinates[0] 
+                    # curr_player2[0][1] = left_wrist_coordinates[1]# - player2.y
+
 
                 # f side == 1: # player1
                 #     curr_player1[0][0] = right_wrist_coordinates[0] 
