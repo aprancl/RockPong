@@ -117,14 +117,42 @@ def main():
                 # canvas.move(ball, )
                 # TODO update where the pong paddles are based on the coordinates defined right here
 
+
+                #If the wrist corrdinates are out of bounds set them to the edge of the screens
+                
+                
                 # curr_player1[0][0] = right_wrist_coordinates[0] 
                 # curr_player1[0][1] = right_wrist_coordinates[1] - cur_player.y
 
                 # cur_player = player1 if side == 1 else player2
                 if side == 1: # player1
+                    # Check if player would out of bounds. If so, place them on edge
+                    if right_wrist_coordinates[0] > halfWid:
+                        right_wrist_coordinates[0] = halfWid -5
+                    
+                    elif right_wrist_coordinates[0] < 0:
+                        right_wrist_coordinates[0] = 1
+
+                    if right_wrist_coordinates[1] > hei:
+                        right_wrist_coordinates[1] = hei
+                    elif right_wrist_coordinates[1] < 0:
+                        right_wrist_coordinates[1] = 1
+
                     curr_player1[0][0] = right_wrist_coordinates[0] 
                     curr_player1[0][1] = right_wrist_coordinates[1] #- player1.y
                 else: # player2
+                    # Check if player would be on the wrong side
+                    if left_wrist_coordinates[0] <= halfWid:
+                        right_wrist_coordinates[0] = halfWid + 5
+                    
+                    elif left_wrist_coordinates[0] > wid:
+                        left_wrist_coordinates[0] = wid 
+
+                    if left_wrist_coordinates[1] > hei:
+                        left_wrist_coordinates[1] = hei
+                    elif left_wrist_coordinates[1] < 0:
+                        left_wrist_coordinates[1] = 1
+
                     curr_player2[0][0] = left_wrist_coordinates[0] 
                     curr_player2[0][1] = left_wrist_coordinates[1]# - player2.y
 
