@@ -97,7 +97,7 @@ def main():
             # Recolor image to RGB
             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             image.flags.writeable = False
-        
+            print(frame.shape)
             # Make detection
             results = pose.process(image)
         
