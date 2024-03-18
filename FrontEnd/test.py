@@ -9,7 +9,7 @@ def main():
     # Setup
     pygame.init()
     screen_info = pygame.display.Info()
-    screen = pygame.display.set_mode((screen_info.current_w, screen_info.current_h))
+    screen = pygame.display.set_mode((screen_info.current_w, screen_info.current_h), pygame.FULLSCREEN)
     clock = pygame.time.Clock()  # Used to calculate Delta time
     running = True
     dt = 0  # Stores seconds between frames
@@ -50,7 +50,7 @@ def main():
         curr_ball[0][0] += dx * dt
         curr_ball[0][1] += dy * dt
 
-        lines = draw_line_dashed(screen, (screen.get_width()/2, 0), (screen.get_width()/2, screen_info.current_h), width=10, dash_length=17)
+        lines = draw_line_dashed(screen, (screen.get_width()/2, 0), (screen.get_width()/2, screen_info.current_h+35), width=10, dash_length=16)
         ball = pygame.draw.ellipse(screen, 'pink', (curr_ball[0][0], curr_ball[0][1], curr_ball[1][0], curr_ball[1][1]))
         player1 = pygame.draw.rect(screen, 'red', (curr_player1[0][0], curr_player1[0][1], curr_player1[1][0], curr_player1[1][1]))
         player2 = pygame.draw.rect(screen, 'blue', (curr_player2[0][0], curr_player2[0][1], curr_player2[1][0], curr_player2[1][1]))
