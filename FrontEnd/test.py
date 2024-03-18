@@ -1,27 +1,30 @@
 import pygame
 import math
 import numpy as np
-
-
-# Ball dimensions for restart
-BALL = (355, 230)
+import pdb
 
 
 def main():
 
     # Setup
     pygame.init()
-    screen = pygame.display.set_mode((750, 500))
+    screen_info = pygame.display.Info()
+    screen = pygame.display.set_mode((screen_info.current_w, screen_info.current_h))
     clock = pygame.time.Clock()  # Used to calculate Delta time
     running = True
     dt = 0  # Stores seconds between frames
     font = pygame.font.Font(None,70)
 
+    # Ball dimensions for restart
+    BALL = (screen_info.current_w/2, screen_info.current_h/2)
+
     # Values that can change [[x, y], [width, height]]
-    curr_player1 = [[50, 200], [15, 100]]
-    curr_player2 = [[685, 200], [15, 100]]
-    curr_ball = [[355, 230], [40, 40]]
+    curr_player1 = [[50, screen_info.current_h/2], [15, 100]]
+    curr_player2 = [[screen_info.current_w-50, screen_info.current_h/2], [15, 100]]
+    curr_ball = [[BALL[0], BALL[1]], [40, 40]]
     scores = [0, 0]
+
+    winner = -1
 
     # Movement Values
     dx = 125
@@ -47,7 +50,7 @@ def main():
         curr_ball[0][0] += dx * dt
         curr_ball[0][1] += dy * dt
 
-        lines = draw_line_dashed(screen, (screen.get_width()/2, 0), (screen.get_width()/2, 500), width=10)
+        lines = draw_line_dashed(screen, (screen.get_width()/2, 0), (screen.get_width()/2, screen_info.current_h), width=10, dash_length=17)
         ball = pygame.draw.ellipse(screen, 'pink', (curr_ball[0][0], curr_ball[0][1], curr_ball[1][0], curr_ball[1][1]))
         player1 = pygame.draw.rect(screen, 'red', (curr_player1[0][0], curr_player1[0][1], curr_player1[1][0], curr_player1[1][1]))
         player2 = pygame.draw.rect(screen, 'blue', (curr_player2[0][0], curr_player2[0][1], curr_player2[1][0], curr_player2[1][1]))
@@ -62,7 +65,7 @@ def main():
             curr_ball[0][0] += dx * dt
             curr_ball[0][1] += dy * dt
 
-        if curr_ball[0][1] <= 0 or curr_ball[0][1] >= 470:
+        if curr_ball[0][1] <= 0 or curr_ball[0][1] >= screen_info.current_h-40:
             dy *= -1
 
         if curr_ball[0][0] <= 0:
@@ -74,7 +77,7 @@ def main():
             angle = 110 if sum(scores) % 2 == 0 else 290
             first_collision = True
 
-        elif curr_ball[0][0] >= 750:
+        elif curr_ball[0][0] >= screen_info.current_w:
             scores[0] += 1
             curr_ball[0][0] = BALL[0]
             curr_ball[0][1] = BALL[1]
@@ -82,6 +85,13 @@ def main():
             dy = 0
             angle = 110 if sum(scores) % 2 == 0 else 290
             first_collision = True
+
+        if scores[0]>9:
+            winner = "Red"
+            break
+        elif scores[1]>9:
+            winner = "Blue"
+            break
 
         # Handle player movement
         keys = pygame.key.get_pressed()
@@ -96,7 +106,7 @@ def main():
             delta = 300 * dt
 
             # If this movement would not take the player out of bounds
-            if curr_player1[0][1] + delta <= 400:
+            if curr_player1[0][1] + delta <= screen_info.current_h-95:
                 curr_player1[0][1] += delta
 
         if keys[pygame.K_UP]:
@@ -110,16 +120,34 @@ def main():
             delta = 300 * dt
 
             # If this movement would not take the player out of bounds
-            if curr_player2[0][1] + delta <= 400:
+            if curr_player2[0][1] + delta <= screen_info.current_h-95:
                 curr_player2[0][1] += delta
 
+        if keys[pygame.K_q] or keys[pygame.K_ESCAPE]:
+            running = False
         # Update display
         pygame.display.flip()
+
+    if running:
+        screen.fill('white')
+        s = f"{winner} Player wins!"
+        text = font.render(s,True, 'black')
+        screen.blit(text, ((screen.get_width()//2)-12*len(s),(screen.get_height()//2)-25))
+        pygame.display.flip()
+        while running:
+            # Check events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_q] or keys[pygame.K_ESCAPE]:
+                running = False
 
     pygame.quit()
 
 
-def draw_line_dashed(surface: pygame.Surface, start: tuple[int], end: tuple[int], width: int = 1, dash_length: float = 15.5) -> list[pygame.Rect]: 
+def draw_line_dashed(surface: pygame.Surface, start: tuple[int], end: tuple[int], width: int = 1, dash_length: float = 17) -> list[pygame.Rect]: 
     """Draws a dashed line from start to end with desired width and length
        Parameters:
        surface:     The screen where the dashes are to be drawn
