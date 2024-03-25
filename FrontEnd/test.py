@@ -15,16 +15,22 @@ def main():
     dt = 0  # Stores seconds between frames
     font = pygame.font.Font(None,70)
 
-    ratio = (screen_info.current_w/1536,screen_info.current_h/864) 
+    testing_ratio = 1536/864 
+
+    curr_ratio = (screen_info.current_w/screen_info.current_h)
+
+    ratio = curr_ratio/testing_ratio
+
+    print(ratio)
 
     # Ball dimensions for restart
     BALL = (screen_info.current_w/2, screen_info.current_h/2)
 
 
     # Values that can change [[x, y], [width, height]]
-    curr_player1 = [[50, screen_info.current_h/2], [15*ratio[0], 100*ratio[1]]]
-    curr_player2 = [[screen_info.current_w-50, screen_info.current_h/2], [15*ratio[0], 100*ratio[1]]]
-    curr_ball = [[BALL[0], BALL[1]], [40*ratio[0], 40*ratio[1]]]
+    curr_player1 = [[50, screen_info.current_h/2-20], [15*ratio, 100*ratio]]
+    curr_player2 = [[screen_info.current_w-50, screen_info.current_h/2-20], [15*ratio, 100*ratio]]
+    curr_ball = [[BALL[0], BALL[1]], [40*ratio, 40*ratio]]
     scores = [0, 0]
 
     winner = -1
@@ -53,7 +59,7 @@ def main():
         curr_ball[0][0] += dx * dt
         curr_ball[0][1] += dy * dt
 
-        lines = draw_line_dashed(screen, (screen.get_width()/2, 0), (screen.get_width()/2, screen_info.current_h+35*ratio[1]), width=10, dash_length=16)
+        lines = draw_line_dashed(screen, (screen.get_width()/2, 0), (screen.get_width()/2, screen_info.current_h+35*ratio), width=10, dash_length=16)
         ball = pygame.draw.ellipse(screen, 'pink', (curr_ball[0][0], curr_ball[0][1], curr_ball[1][0], curr_ball[1][1]))
         player1 = pygame.draw.rect(screen, 'red', (curr_player1[0][0], curr_player1[0][1], curr_player1[1][0], curr_player1[1][1]))
         player2 = pygame.draw.rect(screen, 'blue', (curr_player2[0][0], curr_player2[0][1], curr_player2[1][0], curr_player2[1][1]))
@@ -68,7 +74,7 @@ def main():
             curr_ball[0][0] += dx * dt
             curr_ball[0][1] += dy * dt
 
-        if curr_ball[0][1] <= 0 or curr_ball[0][1] >= screen_info.current_h-40*ratio[1]:
+        if curr_ball[0][1] <= 0 or curr_ball[0][1] >= screen_info.current_h-5*ratio:
             dy *= -1
 
         if curr_ball[0][0] <= 0:
@@ -109,7 +115,7 @@ def main():
             delta = 300 * dt
 
             # If this movement would not take the player out of bounds
-            if curr_player1[0][1] + delta <= screen_info.current_h-55*ratio[1]:
+            if curr_player1[0][1] + delta <= screen_info.current_h-55*ratio:
                 curr_player1[0][1] += delta
 
         if keys[pygame.K_UP]:
@@ -123,7 +129,7 @@ def main():
             delta = 300 * dt
 
             # If this movement would not take the player out of bounds
-            if curr_player2[0][1] + delta <= screen_info.current_h-55*ratio[1]:
+            if curr_player2[0][1] + delta <= screen_info.current_h-55*ratio:
                 curr_player2[0][1] += delta
 
         if keys[pygame.K_q] or keys[pygame.K_ESCAPE]:
