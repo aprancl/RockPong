@@ -31,6 +31,7 @@ def main():
 
     testing_ratio = 1536/864
 
+
     curr_ratio = (screen_info.current_w/screen_info.current_h)
 
     ratio = curr_ratio/testing_ratio
@@ -89,11 +90,13 @@ def main():
             ret, frame = cap.read()
 
             # Set varaibles to hold the inital width and height of the camera frame
-            # wid = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-            # hei = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-            frame = frame[0:500, 0:750]
-            wid = 750
-            hei = 500
+            wid = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+            hei = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+            # frame = frame[0:500, 0:750]
+            # wid = 750
+            # hei = 500
+
 
             # Width to split the image fram with
             halfWid = wid/2
@@ -101,18 +104,18 @@ def main():
             # x1, y1, x2, y2 = canvas.coords(ball)
             # (canvas.coords(ball)[0] + canvas.coords(ball)[2]) // 2
             mid_ball_x = curr_ball[0][0]
-            if mid_ball_x <= halfWid and side == 2:
+            if mid_ball_x <= (screen_info.current_w / 2) and side == 2:
                 side = 1
-            elif mid_ball_x > halfWid and side == 1:
+            elif mid_ball_x > (screen_info.current_w / 2) and side == 1:
                 side = 2
 
             # Check which side of the frame to analyze
             if (side == 1):  # For left side
                 # Set width to be from 0 to the half width mark
-                frame = frame[0:500, 0:int(halfWid)]
+                frame = frame[0:int(hei), 0:int(halfWid)]
             else:  # For right side
                 # Set the width from the half width point to the width of the frame
-                frame = frame[0:500, int(halfWid):int(wid)]
+                frame = frame[0:int(hei), int(halfWid):int(wid)]
             # Recolor image to RGB
             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             image.flags.writeable = False
@@ -132,13 +135,13 @@ def main():
 
                 # Convert elbow corrdinates to string
                 left_elbow_coordinates = mediapipe_to_pixel_coords(
-                    landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].x, landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].y, wid, hei)
+                    landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].x, landmarks[mp.solutions.pose.PoseLandmark.LEFT_ELBOW.value].y, screen_info.current_w, screen_info.current_h)
                 right_elbow_coordinates = mediapipe_to_pixel_coords(
-                    landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].y, wid, hei)
+                    landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_ELBOW.value].y, screen_info.current_w, screen_info.current_h)
                 left_wrist_coordinates = mediapipe_to_pixel_coords(
-                    landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].y, wid, hei)
+                    landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.LEFT_WRIST.value].y, screen_info.current_w, screen_info.current_h)
                 right_wrist_coordinates = mediapipe_to_pixel_coords(
-                    landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].y, wid, hei)
+                    landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].x, landmarks[mp.solutions.pose.PoseLandmark.RIGHT_WRIST.value].y, screen_info.current_w, screen_info.current_h)
                 # canvas.move(ball, )
                 # TODO update where the pong paddles are based on the coordinates defined right here
 
@@ -155,14 +158,14 @@ def main():
                     curr_player1[0][1] = right_wrist_coordinates[1]
                     curr_player1[0][0] /= 2
 
-                    if curr_player1[0][0] > halfWid:
-                        curr_player1[0][0] = halfWid - 5
+                    if curr_player1[0][0] > screen_info.current_w:
+                        curr_player1[0][0] = screen_info.current_w - 5
 
                     elif curr_player1[0][0] < 0:
                         curr_player1[0][0] = 1
 
-                    if curr_player1[0][1] > hei:
-                        curr_player1[0][1] = hei
+                    if curr_player1[0][1] > screen_info.current_h:
+                        curr_player1[0][1] = screen_info.current_h
                     elif curr_player1[0][1] < 0:
                         curr_player1[0][1] = 1
 
@@ -175,16 +178,16 @@ def main():
                     curr_player2[0][0] = left_wrist_coordinates[0]
                     # - player2.y
                     curr_player2[0][1] = left_wrist_coordinates[1]
-                    curr_player2[0][0] = (curr_player2[0][0] / 2) + halfWid
+                    curr_player2[0][0] = (curr_player2[0][0] / 2) + (screen_info.current_w / 2)
 
-                    if curr_player2[0][0] <= halfWid:
-                        curr_player2[0][0] = halfWid + 5
+                    if curr_player2[0][0] <= (screen_info.current_w / 2):
+                        curr_player2[0][0] = (screen_info.current_w / 2) + 5
 
-                    elif curr_player2[0][0] > wid:
-                        curr_player2[0][0] = wid
+                    elif curr_player2[0][0] > screen_info.current_w:
+                        curr_player2[0][0] = screen_info.current_w
 
-                    if left_wrist_coordinates[1] > hei:
-                        curr_player2[0][1] = hei
+                    if left_wrist_coordinates[1] > screen_info.current_h:
+                        curr_player2[0][1] = screen_info.current_h
                     elif curr_player2[0][1] < 0:
                         curr_player2[0][1] = 1
 
